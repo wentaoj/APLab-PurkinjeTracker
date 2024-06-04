@@ -1,0 +1,8 @@
+colorama
+numpy
+opencv-contrib-python
+opencv-python
+pip
+setuptools
+tqdm
+wheel
