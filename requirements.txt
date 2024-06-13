@@ -6,3 +6,5 @@ pip
 setuptools
 tqdm
 wheel
+matplotlib
+scikit-learn

@@ -1,6 +1,7 @@
 # Ignore .pth files
 models/*.pth
 *.pptx
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
