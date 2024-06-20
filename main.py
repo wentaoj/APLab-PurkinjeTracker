@@ -1,59 +1,60 @@
-import numpy as np
-import cv2
-import os
-from tqdm import tqdm
 from camera import DataGenerator
-from tracker import MyTracker
+from tracker import ClusteringTracker, DoHTracker_cluster, DoHTracker_skimage
+from utils import perc_error
+import numpy as np
+import os
 
-def synthetic_random(output_dir: str, num_images :int = 1000, save_info: bool = True) -> None:
+import argparse
+
+def synthetic_random(num_images: int):
     """
     1. Generate synthetic images
     """
-    # initialization
-    image_size = (600, 800) # (height, width)
-    noise_level = 20
-    intensity_factor_P1 = 1.0
-    intensity_factor_P4 = 0.6 # P4 much lower intensity
-    os.makedirs(output_dir, exist_ok=True)
+    # also can load these from a file (e.g. json, csv, etc.)
+    positions_P1 = [(np.random.uniform(50, 750), np.random.uniform(50, 550)) for _ in range(num_images)]
+    positions_P4 = [(np.random.uniform(50, 750), np.random.uniform(50, 550)) for _ in range(num_images)]
+    intensities_P1 = [255.0 for _ in range(num_images)]
+    intensities_P4 = [0.6 * 255.0 for _ in range(num_images)]
 
-    camera_config = DataGenerator(image_size, noise_level, output_dir)
-    camera_config.set_intensity_P1(intensity_factor_P1)
-    camera_config.set_intensity_P4(intensity_factor_P4)
+    camera_config = DataGenerator((600, 800), noise_level=50)
+    camera_config.set_positions_P1(positions_P1)
+    camera_config.set_positions_P4(positions_P4)
+    camera_config.set_intensities_P1(intensities_P1)
+    camera_config.set_intensities_P4(intensities_P4)
+    camera_config.produce_frame(num_images)
 
-    for i in tqdm(range(num_images)):
-        # Randomly position P1 and P4
-        position_P1 = (
-            np.random.uniform(50, image_size[1] - 50), 
-            np.random.uniform(50, image_size[0] - 50)
-        )
-        position_P4 = (
-            np.random.uniform(50, image_size[1] - 50),
-            np.random.uniform(50, image_size[0] - 50)
-        )
-        camera_config.set_position_P1(position_P1)
-        camera_config.set_position_P4(position_P4)
-        output_frame = camera_config.produce_frame(frame_num=i, save_info=save_info)
-        # save images at path
-        cv2.imwrite(os.path.join(output_dir, f"frame#{i:04d}.png"), output_frame)
     
-def track_purkinje(output_dir: str) -> dict:
+def track_purkinje(src_file: str):
     """
     2. Track Purkinje Images (Polymorphism)
     Sample usage of Tracker class
     """
-    tracker = MyTracker() # Inherited class
-    result_dic = {}
-    for i, image in enumerate(os.listdir(output_dir)):
-        image = cv2.imread(os.path.join(output_dir, f"frame#{i:04d}.png"), cv2.IMREAD_GRAYSCALE)
-        result = tracker.track(image)
-        result_dic[f"frame#{i:04d}"] = result["dx"], result["dy"]
-    return result_dic
+    # tracker = ClusteringTracker()
+    # tracker = DoHTracker_cluster()
+    tracker = DoHTracker_skimage()
+    tracker.track(src_file)
+
 
 if __name__ == "__main__":
-    output_dir = "./images"
-    # 1. Generate synthetic images; dx, dy info is printed on the image
-    synthetic_random(output_dir, num_images=1000)
+    # python main.py -n 1000 -i gen_image
+    parser = argparse.ArgumentParser(prog="AP Lab: Purkinje Image Synthetic & Tracker", description="Purkinje Image Synthetic and Tracker.")
+    # ...
+    parser.add_argument("-n" ,"--num_images", type=int, default=None, help="Number of images to generate")
+    parser.add_argument("-i" ,"--input", type=str, default=None, help="Input image folder directory or a single video file. Please place the file under `data` directory")
+    args = parser.parse_args()
 
-    # # 2. Track Purkinje Images (Polymorphism)
-    print(track_purkinje(output_dir))
+    num_images = args.num_images
+    input_dir = args.input
+
+    # 1. Generate synthetic images: -n {num_images}
+    if num_images:
+        synthetic_random(num_images)
     
+    # # 2. Track Purkinje Images (Polymorphism): -i {video_dir} | {image_dir}
+    if input_dir:
+        track_purkinje(input_dir)
+
+        # 3. Calculate Percentage Error
+        # perc_error("data/gen_image.json", "data/pred_gen_image_cluster.json", "cluster")
+        # perc_error("data/gen_image.json", "data/pred_gen_image_doh_cluster.json", "doh_cluster")
+        perc_error("data/gen_image.json", "data/pred_gen_image_doh_skimage.json", "doh_skimage")

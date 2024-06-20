@@ -8,3 +8,5 @@ tqdm
 wheel
 matplotlib
 scikit-learn
+scikit-image
+pandas
