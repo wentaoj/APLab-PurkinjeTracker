@@ -1,0 +1,1 @@
+. "/home/wentao/Documents/purkinje-cpp/build/Release/generators/conanrunenv-release-x86_64.sh"

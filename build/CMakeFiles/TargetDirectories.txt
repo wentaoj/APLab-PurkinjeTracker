@@ -1,0 +1,3 @@
+/home/wentao/Documents/purkinje-cpp/build/CMakeFiles/DoHTracker.dir
+/home/wentao/Documents/purkinje-cpp/build/CMakeFiles/edit_cache.dir
+/home/wentao/Documents/purkinje-cpp/build/CMakeFiles/rebuild_cache.dir
