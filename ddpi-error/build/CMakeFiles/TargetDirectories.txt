@@ -1,6 +1,0 @@
-/home/wentao/Documents/ddpi/build/CMakeFiles/ddpi_test.dir
-/home/wentao/Documents/ddpi/build/CMakeFiles/edit_cache.dir
-/home/wentao/Documents/ddpi/build/CMakeFiles/rebuild_cache.dir
-/home/wentao/Documents/ddpi/build/ddpi-alg-main/CMakeFiles/ddpiAlg.dir
-/home/wentao/Documents/ddpi/build/ddpi-alg-main/CMakeFiles/edit_cache.dir
-/home/wentao/Documents/ddpi/build/ddpi-alg-main/CMakeFiles/rebuild_cache.dir
