@@ -1,21 +1,19 @@
-#include "iostream"
-#include "fstream"
-#include "cmath"
-#include "vector"
-#include "string"
-#include "map"
-#include "opencv2/opencv.hpp"
-// #include "nlohmann/json.hpp"
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <map>
+#include <opencv2/opencv.hpp>
 #include "base_tracker.hpp"
 
-using namespace std;
+// using namespace std;
 using namespace cv;
 
-vector<pair<Mat, int>> IntermediaryTracker::read_frames(string &src)
+std::vector<std::pair<cv::Mat, int>> IntermediaryTracker::read_frames(string &src)
 {
     VideoCapture vidcap(src);
-    vector<pair<Mat, int>> frames;
-    Mat frame;
+    std::vector<std::pair<cv::Mat, int>> frames;
+    cv::Mat frame;
     int frame_num = 0;
     while (vidcap.read(frame))
     {
@@ -25,18 +23,18 @@ vector<pair<Mat, int>> IntermediaryTracker::read_frames(string &src)
     return frames;
 }
 
-Mat IntermediaryTracker::image_proc(Mat &frame)
+cv::Mat IntermediaryTracker::image_proc(cv::Mat &frame)
 {
-    Mat image_i, image_g, image_y, image;
+    cv::Mat image_i, image_g, image_y, image;
     frame.convertTo(image_i, 5);
-    cvtColor(image_i, image_g, COLOR_BGR2GRAY, 5);
+    cv::cvtColor(image_i, image_g, COLOR_BGR2GRAY, 5);
     pow(image_g, 0.5, image_y);
     image_y.convertTo(image_g, 5);
-    normalize(image_g, image, 0, 1, NORM_MINMAX, 5);
+    cv::normalize(image_g, image, 0, 1, NORM_MINMAX, 5);
     return image;
 }
 
-TrackerData IntermediaryTracker::save_results(int frame_num, vector<Point> &centroids)
+TrackerData IntermediaryTracker::save_results(int frame_num, std::vector<Point> &centroids)
 {
     float dx = abs(centroids[0].x - centroids[1].x);
     float dy = abs(centroids[0].y - centroids[1].y);

@@ -1,13 +1,18 @@
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <nlohmann/json.hpp>
 #include "image_generator.hpp"
 
+using namespace std;
+
+const int MOVEMENT_CONSTANT = 1.2;
+
 ImageGenerator::ImageGenerator(int width, int height, float amplitude1, float sigma1, float amplitude2, float sigma2, int noise_level, int num_images)
-    : width(width), height(height), amplitude1(amplitude1), sigma1(sigma1), amplitude2(amplitude2), sigma2(sigma2), noise_level(noise_level), num_images(num_images), current_image(0)
+    : width(width), height(height), amplitude1(amplitude1), sigma1(sigma1), amplitude2(amplitude2), sigma2(sigma2), noise_level(noise_level), num_images(num_images), current_image(0),
+      position_P1_x(50), position_P1_y(height / 2), position_P4_x(450), position_P4_y(height / 2), direction_P1(1), direction_P4(1)
 {
     generator = std::default_random_engine(42);
-    distribution_x = std::uniform_real_distribution<float>(50, width - 50);
     distribution_y = std::uniform_real_distribution<float>(30, height - 30);
 }
 
@@ -18,15 +23,37 @@ bool ImageGenerator::hasNext() const
 
 cv::Mat ImageGenerator::next()
 {
+    // update
+    position_P1_x += direction_P1 * (10 + MOVEMENT_CONSTANT);
+    if (position_P1_x <= 50 || position_P1_x >= 1024 - 50)
+    {
+        direction_P1 = -direction_P1;
+    }
+
+    position_P4_x += direction_P4 * 10; // Move P4 horizontally
+    if (position_P4_x <= 450 || position_P4_x >= width - 50)
+    {
+        direction_P4 = -direction_P4;
+    }
+
+    if (direction_P1 > 0)
+    {
+        position_P1_x = std::min(position_P1_x, position_P4_x - 10);
+    }
+    else
+    {
+        position_P1_x = std::max(position_P1_x, position_P4_x + 10);
+    }
+
     gaussian2d_t p1{
-        .center_x = distribution_x(generator),
-        .center_y = distribution_y(generator),
+        .center_x = position_P1_x,
+        .center_y = position_P1_y,
         .amplitude = amplitude1,
         .sigma = sigma1};
 
     gaussian2d_t p4{
-        .center_x = distribution_x(generator),
-        .center_y = distribution_y(generator),
+        .center_x = position_P4_x,
+        .center_y = position_P4_y,
         .amplitude = amplitude2,
         .sigma = sigma2};
 

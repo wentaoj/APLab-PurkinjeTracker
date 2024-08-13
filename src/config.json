@@ -1,6 +1,6 @@
 {
     "noise_level": 0,
-    "num_images": 500,
+    "num_images": 80,
     "amplitude1": 2.0,
     "sigma1": 30.0,
     "amplitude4": 0.5,
@@ -22,5 +22,9 @@
     "min_sigma": 3,
     "num_sigma": 20,
     "doh_threshold": 0.005,
-    "doh_overlap": 0
+    "doh_overlap": 0,
+    "kf_dt": 0.6,
+    "kf_process_noise": 0.01,
+    "kf_measurement_noise": 1.0,
+    "kf_state_estimate_error": 0.5
 }

@@ -1,25 +1,25 @@
-#include "iostream"
-#include "vector"
-#include "utility"
-#include "numeric"
-#include "opencv2/opencv.hpp"
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <numeric>
+#include <opencv2/opencv.hpp>
 #include "blob.hpp"
 
 using namespace std;
 using namespace cv;
 
-vector<Point3f> DoH::get_blobs(Mat &in_image)
+std::vector<Point3f> DoH::get_blobs(cv::Mat &in_image)
 {
-    Mat image_g, image_n, image_i, image;
-    normalize(in_image, image_g, 0, 1, NORM_MINMAX, 5);
+    cv::Mat image_g, image_n, image_i, image;
+    cv::normalize(in_image, image_g, 0, 1, NORM_MINMAX, 5);
     integral(image_g, image_n, 5);
     image_i = image_n(Range(1, image_n.rows), Range(1, image_n.cols)).clone();
     image_i.convertTo(image, 5);
     auto sigmas = logspace(log10(min_sigma), log10(max_sigma), num_sigma);
-    vector<Mat> image_2d;
+    std::vector<cv::Mat> image_2d;
     for (int j = 0; j < sigmas.size(); j++)
     {
-        image_2d.push_back(Mat::zeros(image.rows, image.cols, 5));
+        image_2d.push_back(cv::Mat::zeros(image.rows, image.cols, 5));
     }
     for (int i = 0; i < sigmas.size(); i++)
     {
@@ -37,9 +37,9 @@ vector<Point3f> DoH::get_blobs(Mat &in_image)
     return get_prune(lm, overlap);
 }
 
-vector<float> logspace(float start, float stop, int num)
+std::vector<float> logspace(float start, float stop, int num)
 {
-    vector<float> result;
+    std::vector<float> result;
     float delta = (stop - start) / (num - 1);
     for (int i = 0; i < num; i++)
     {
@@ -48,21 +48,21 @@ vector<float> logspace(float start, float stop, int num)
     return result;
 }
 
-vector<int> argsort(vector<float> &inten)
+std::vector<int> argsort(std::vector<float> &inten)
 {
-    vector<int> idx(inten.size());
+    std::vector<int> idx(inten.size());
     iota(idx.begin(), idx.end(), 0);
     sort(idx.begin(), idx.end(), [&inten](int i1, int i2)
          { return inten[i1] < inten[i2]; });
     return idx;
 }
 
-vector<Point3f> DoH::get_prune(vector<Point3f> &blob, float overlap)
+std::vector<Point3f> DoH::get_prune(std::vector<Point3f> &blob, float overlap)
 {
-    vector<Rect> pos;
-    vector<float> conf;
-    vector<int> mat_i;
-    vector<Point3f> out;
+    std::vector<Rect> pos;
+    std::vector<float> conf;
+    std::vector<int> mat_i;
+    std::vector<Point3f> out;
 
     if (blob.empty())
     {
@@ -93,7 +93,7 @@ vector<Point3f> DoH::get_prune(vector<Point3f> &blob, float overlap)
     return out;
 }
 
-float DoH::integral_img(Mat &image, int r, int c, int rl, int cl)
+float DoH::integral_img(cv::Mat &image, int r, int c, int rl, int cl)
 {
     r = max(0, min(r, image.rows - 1));
     c = max(0, min(c, image.cols - 1));
@@ -102,12 +102,12 @@ float DoH::integral_img(Mat &image, int r, int c, int rl, int cl)
     return max(0.0f, image.at<float>(r, c) + image.at<float>(r2, c2) - image.at<float>(r, c2) - image.at<float>(r2, c));
 }
 
-vector<Point3f> DoH::get_peak(vector<Mat> &image, vector<Mat> &mask, int num_peaks)
+std::vector<Point3f> DoH::get_peak(std::vector<cv::Mat> &image, std::vector<cv::Mat> &mask, int num_peaks)
 {
-    vector<float> peak;
-    vector<Point3f> coords;
-    vector<Point3f> top_cords;
-    vector<Point> points;
+    std::vector<float> peak;
+    std::vector<Point3f> coords;
+    std::vector<Point3f> top_cords;
+    std::vector<Point> points;
 
     for (int z = 0; z < image.size(); z++)
     {
@@ -126,15 +126,15 @@ vector<Point3f> DoH::get_peak(vector<Mat> &image, vector<Mat> &mask, int num_pea
     return top_cords;
 }
 
-vector<Mat> DoH::get_mask(vector<Mat> &image, vector<Mat> &footprint, float threshold)
+std::vector<cv::Mat> DoH::get_mask(std::vector<cv::Mat> &image, std::vector<cv::Mat> &footprint, float threshold)
 {
-    vector<Mat> out;
+    std::vector<cv::Mat> out;
 
     if (footprint.size() == 1 || image.size() == 1)
     {
         for (int i = 0; i < image.size(); i++)
         {
-            Mat mask;
+            cv::Mat mask;
             compare(image[i], threshold, mask, CMP_GT);
             out.push_back(mask / 255);
         }
@@ -143,19 +143,19 @@ vector<Mat> DoH::get_mask(vector<Mat> &image, vector<Mat> &footprint, float thre
 
     for (int i = 0; i < image.size(); i++)
     {
-        Mat image_mask = image[i].clone();
+        cv::Mat image_mask = image[i].clone();
         for (int j = -1; j <= 1; j++)
         {
             int curr = i + j;
             if (curr >= 0 && curr < image.size())
             {
-                Mat layer;
+                cv::Mat layer;
                 dilate(image[curr], layer, footprint[j + 1]);
                 max(image_mask, layer, image_mask);
             }
         }
 
-        Mat mask1, mask2, mask;
+        cv::Mat mask1, mask2, mask;
         compare(image[i], image_mask, mask1, CMP_EQ);
         compare(image[i], threshold, mask2, CMP_GE);
         bitwise_and(mask1, mask2, mask);
@@ -164,7 +164,7 @@ vector<Mat> DoH::get_mask(vector<Mat> &image, vector<Mat> &footprint, float thre
     return out;
 }
 
-vector<Point3f> DoH::local_max(vector<Mat> &image, float threshold, int num_peaks)
+std::vector<Point3f> DoH::local_max(std::vector<cv::Mat> &image, float threshold, int num_peaks)
 {
     double image_max = 0.0;
     for (int i = 0; i < image.size(); i++)
@@ -175,10 +175,10 @@ vector<Point3f> DoH::local_max(vector<Mat> &image, float threshold, int num_peak
     }
 
     float image_peak = image_max / num_peaks;
-    vector<Mat> footprint;
+    std::vector<cv::Mat> footprint;
     for (int i = 0; i < 3; i++)
     {
-        footprint.push_back(Mat::ones(3, 3, 5));
+        footprint.push_back(cv::Mat::ones(3, 3, 5));
     }
     threshold = max(threshold, image_peak);
 
@@ -186,7 +186,7 @@ vector<Point3f> DoH::local_max(vector<Mat> &image, float threshold, int num_peak
     return get_peak(image, mask, num_peaks);
 }
 
-Mat DoH::hessian_mat(Mat &image, float sigma)
+cv::Mat DoH::hessian_mat(cv::Mat &image, float sigma)
 {
     int size, height, width, s2, s3, w;
     size = 3 * sigma;
@@ -196,7 +196,7 @@ Mat DoH::hessian_mat(Mat &image, float sigma)
     s3 = size / 3;
     w = size;
 
-    Mat out = Mat(image.size(), 5);
+    cv::Mat out = cv::Mat(image.size(), 5);
 
     float w_i = 1.0 / (size * size);
 

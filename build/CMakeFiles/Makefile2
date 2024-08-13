@@ -54,94 +54,51 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wentao/Documents/APLab/ddpi_test
+CMAKE_SOURCE_DIR = /app/ddpi-test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/wentao/Documents/APLab/ddpi_test/build
+CMAKE_BINARY_DIR = /app/ddpi-test/build
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/ddpi_test.dir/all
-all: ddpi-alg/all
+all: CMakeFiles/Tracker.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall: ddpi-alg/preinstall
+preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/ddpi_test.dir/clean
-clean: ddpi-alg/clean
+clean: CMakeFiles/Tracker.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory ddpi-alg
-
-# Recursive "all" directory target.
-ddpi-alg/all: ddpi-alg/CMakeFiles/ddpiAlg.dir/all
-.PHONY : ddpi-alg/all
-
-# Recursive "preinstall" directory target.
-ddpi-alg/preinstall:
-.PHONY : ddpi-alg/preinstall
-
-# Recursive "clean" directory target.
-ddpi-alg/clean: ddpi-alg/CMakeFiles/ddpiAlg.dir/clean
-.PHONY : ddpi-alg/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/ddpi_test.dir
+# Target rules for target CMakeFiles/Tracker.dir
 
 # All Build rule for target.
-CMakeFiles/ddpi_test.dir/all: ddpi-alg/CMakeFiles/ddpiAlg.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ddpi_test.dir/build.make CMakeFiles/ddpi_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ddpi_test.dir/build.make CMakeFiles/ddpi_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles --progress-num=11,12,13,14,15,16 "Built target ddpi_test"
-.PHONY : CMakeFiles/ddpi_test.dir/all
+CMakeFiles/Tracker.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tracker.dir/build.make CMakeFiles/Tracker.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tracker.dir/build.make CMakeFiles/Tracker.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/app/ddpi-test/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target Tracker"
+.PHONY : CMakeFiles/Tracker.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/ddpi_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles 16
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ddpi_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles 0
-.PHONY : CMakeFiles/ddpi_test.dir/rule
+CMakeFiles/Tracker.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /app/ddpi-test/build/CMakeFiles 7
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Tracker.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /app/ddpi-test/build/CMakeFiles 0
+.PHONY : CMakeFiles/Tracker.dir/rule
 
 # Convenience name for target.
-ddpi_test: CMakeFiles/ddpi_test.dir/rule
-.PHONY : ddpi_test
+Tracker: CMakeFiles/Tracker.dir/rule
+.PHONY : Tracker
 
 # clean rule for target.
-CMakeFiles/ddpi_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ddpi_test.dir/build.make CMakeFiles/ddpi_test.dir/clean
-.PHONY : CMakeFiles/ddpi_test.dir/clean
-
-#=============================================================================
-# Target rules for target ddpi-alg/CMakeFiles/ddpiAlg.dir
-
-# All Build rule for target.
-ddpi-alg/CMakeFiles/ddpiAlg.dir/all:
-	$(MAKE) $(MAKESILENT) -f ddpi-alg/CMakeFiles/ddpiAlg.dir/build.make ddpi-alg/CMakeFiles/ddpiAlg.dir/depend
-	$(MAKE) $(MAKESILENT) -f ddpi-alg/CMakeFiles/ddpiAlg.dir/build.make ddpi-alg/CMakeFiles/ddpiAlg.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10 "Built target ddpiAlg"
-.PHONY : ddpi-alg/CMakeFiles/ddpiAlg.dir/all
-
-# Build rule for subdir invocation for target.
-ddpi-alg/CMakeFiles/ddpiAlg.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles 10
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ddpi-alg/CMakeFiles/ddpiAlg.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wentao/Documents/APLab/ddpi_test/build/CMakeFiles 0
-.PHONY : ddpi-alg/CMakeFiles/ddpiAlg.dir/rule
-
-# Convenience name for target.
-ddpiAlg: ddpi-alg/CMakeFiles/ddpiAlg.dir/rule
-.PHONY : ddpiAlg
-
-# clean rule for target.
-ddpi-alg/CMakeFiles/ddpiAlg.dir/clean:
-	$(MAKE) $(MAKESILENT) -f ddpi-alg/CMakeFiles/ddpiAlg.dir/build.make ddpi-alg/CMakeFiles/ddpiAlg.dir/clean
-.PHONY : ddpi-alg/CMakeFiles/ddpiAlg.dir/clean
+CMakeFiles/Tracker.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Tracker.dir/build.make CMakeFiles/Tracker.dir/clean
+.PHONY : CMakeFiles/Tracker.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

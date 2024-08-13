@@ -1,11 +1,11 @@
-#include "iostream"
-#include "fstream"
-#include "vector"
-#include "utility"
-#include "cmath"
-#include "algorithm"
-#include "string"
-#include "opencv2/opencv.hpp"
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <utility>
+#include <cmath>
+#include <algorithm>
+#include <string>
+#include <opencv2/opencv.hpp>
 #include "doh_tracker.hpp"
 #include "blob.hpp"
 
@@ -15,17 +15,16 @@ using namespace cv;
 void DoHTracker::track(string &src)
 {
     Frame generator(src);
-    vector<TrackerData> pred_info;
+    std::vector<TrackerData> pred_info;
 
     while (generator.hasNext())
     {
         auto [image, frame_num] = generator.next();
 
-        cout << "Frame: " << frame_num << endl;
-        Mat frame = image_proc(image);
+        cv::Mat frame = image_proc(image);
         try
         {
-            vector<Point> centroids = process_frame(frame, frame_num);
+            std::vector<Point> centroids = process_frame(frame, frame_num);
 
             if (centroids.size() < 2)
             {
@@ -40,20 +39,19 @@ void DoHTracker::track(string &src)
     }
 }
 
-vector<TrackingResult> DoHTracker::get_tracking_results(string &src)
+std::vector<TrackingResult> DoHTracker::get_tracking_results(string &src)
 {
     Frame generator(src);
-    vector<TrackingResult> results;
+    std::vector<TrackingResult> results;
 
     while (generator.hasNext())
     {
         auto [image, frame_num] = generator.next();
 
-        cout << "Frame: " << frame_num << endl;
-        Mat frame = image_proc(image);
+        cv::Mat frame = image_proc(image);
         try
         {
-            vector<Point> centroids = process_frame(frame, frame_num);
+            std::vector<Point> centroids = process_frame(frame, frame_num);
 
             if (centroids.size() < 2)
             {
@@ -71,15 +69,15 @@ vector<TrackingResult> DoHTracker::get_tracking_results(string &src)
     return results;
 }
 
-vector<Point> DoHTracker::process_frame(Mat &frame, int frame_num)
+std::vector<Point> DoHTracker::process_frame(cv::Mat &frame, int frame_num)
 {
-    Mat image = frame.clone();
+    cv::Mat image = frame.clone();
     if (image.channels() == 3)
     {
-        cvtColor(image, image, COLOR_BGR2GRAY);
+        cv::cvtColor(image, image, COLOR_BGR2GRAY);
     }
 
-    vector<Point> centroids = detect_blobs(image, frame_num);
+    std::vector<Point> centroids = detect_blobs(image, frame_num);
 
     if (centroids.size() < 2)
     {
@@ -89,26 +87,20 @@ vector<Point> DoHTracker::process_frame(Mat &frame, int frame_num)
     return centroids;
 }
 
-vector<Point> DoHTracker::detect_blobs(Mat &image, int frame_num)
+std::vector<Point> DoHTracker::detect_blobs(cv::Mat &image, int frame_num)
 {
     DoH doh(max_sigma, min_sigma, num_sigma, threshold, overlap);
-    vector<Point3f> blobs = doh.get_blobs(image);
-
-    for (const auto &blob : blobs)
-    {
-        cout << "blob: " << blob << endl;
-    }
+    std::vector<Point3f> blobs = doh.get_blobs(image);
 
     if (blobs.size() < 2)
     {
-        throw runtime_error("DoH Detection Error: Not enough blobs found at" + to_string(frame_num) + "\n");
         return {};
     }
 
     sort(blobs.begin(), blobs.end(), [](Point3f &a, Point3f &b)
          { return a.z > b.z; });
 
-    vector<Point> centroids;
+    std::vector<Point> centroids;
     for (int i = 0; i < blobs.size(); i++)
     {
         float x = blobs[i].x;
